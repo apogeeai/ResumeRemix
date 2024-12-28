@@ -19,11 +19,13 @@ export default function Home() {
       });
       
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'Failed to generate description');
+      }
       setResult(data.result);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
-      const errorData = await response.json();
-      alert(`Error: ${errorData.details || errorData.error}`);
+      alert(`Error: ${error.message}`);
     }
     setIsLoading(false);
   };
