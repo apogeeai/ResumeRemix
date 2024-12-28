@@ -10,7 +10,7 @@ export default async function handler(
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.Open_API_Key) {
     return res.status(500).json({ 
       error: 'OpenAI API key not configured',
       details: 'Please add your OpenAI API key to the Secrets tool (Tools > Secrets)'
@@ -18,7 +18,7 @@ export default async function handler(
   }
 
   const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.Open_API_Key
   });
 
   try {
