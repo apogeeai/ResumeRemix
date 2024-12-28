@@ -2,6 +2,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY is not set in environment variables');
+}
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -16,6 +20,10 @@ export default async function handler(
 
   try {
     const { resume, jobDescription } = req.body;
+
+    if (!resume || !jobDescription) {
+      return res.status(400).json({ error: 'Resume and job description are required' });
+    }
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -32,8 +40,11 @@ export default async function handler(
     });
 
     res.status(200).json({ result: completion.choices[0].message.content });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error:', error);
-    res.status(500).json({ error: 'Failed to generate description' });
+    res.status(500).json({ 
+      error: 'Failed to generate description',
+      details: error.message 
+    });
   }
 }
