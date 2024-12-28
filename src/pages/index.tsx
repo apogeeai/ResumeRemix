@@ -6,12 +6,25 @@ export default function Home() {
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
 
-  const handleMatch = () => {
-    // Here you would implement the matching logic
-    const keywords = jobDescription.toLowerCase().split(' ');
-    const resumeText = resume.toLowerCase();
-    const matches = keywords.filter(word => resumeText.includes(word));
-    alert(`Found ${matches.length} matching keywords!`);
+  const [isLoading, setIsLoading] = useState(false);
+  const [result, setResult] = useState('');
+
+  const handleMatch = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume, jobDescription }),
+      });
+      
+      const data = await response.json();
+      setResult(data.result);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to generate hybrid description');
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -48,6 +61,21 @@ export default function Home() {
             Match Resume
           </button>
         </div>
+        {isLoading && (
+          <div className="text-center mt-8 text-gray-700 dark:text-gray-300">
+            Generating hybrid description...
+          </div>
+        )}
+        {result && (
+          <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+              Hybrid Job Description
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              {result}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
