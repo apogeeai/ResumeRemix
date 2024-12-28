@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "next": "^14.0.0",
+    "next-themes": "^0.2.1",
+    "openai": "^4.77.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "next-themes": "^0.2.1"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
