@@ -54,13 +54,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-8">
-      <ThemeToggle />
-      
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="h-[50px] bg-white dark:bg-gray-800 shadow-md flex items-center justify-between px-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Resume<span className="text-blue-600">Remix</span>
         </h1>
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Login
+          </button>
+        </div>
+      </header>
+      
+      <div className="max-w-7xl mx-auto p-4 sm:p-8">
         
         <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
           <div className="w-full">

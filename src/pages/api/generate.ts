@@ -33,11 +33,23 @@ export default async function handler(
       messages: [
         {
           role: "system",
-          content: "You are an expert resume writer specializing in tailoring resumes to specific job requirements while maintaining the candidate's authentic experience."
+          content: "You are an expert resume writer specializing in creating targeted bullet points that highlight relevant experience for specific job requirements."
         },
         {
           role: "user",
-          content: `Create a hybrid resume that strategically combines and emphasizes the overlapping elements between the candidate's experience and job requirements.
+          content: `Analyze the resume and job description, then create a bulleted list of achievements and experiences that best match the job requirements. Format the response as follows:
+
+Key Matching Skills:
+• [List 3-5 most relevant skills]
+
+Targeted Experience Highlights:
+• [Transform resume experiences into 5-7 achievement-focused bullet points that directly address job requirements]
+
+Technical Proficiencies:
+• [List relevant technical skills from resume that match job needs]
+
+Additional Qualifications:
+• [2-3 bullet points highlighting other relevant qualifications]
 
 Original Resume: "${resume}"
 Job Description: "${jobDescription}"
