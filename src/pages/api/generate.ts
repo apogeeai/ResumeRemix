@@ -2,10 +2,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -20,6 +16,10 @@ export default async function handler(
       details: 'Please add your OpenAI API key to the Secrets tool (Tools > Secrets)'
     });
   }
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+  });
 
   try {
     const { resume, jobDescription } = req.body;
