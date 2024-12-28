@@ -54,15 +54,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-8">
       <ThemeToggle />
       
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-900 dark:text-white">
           Resume<span className="text-blue-600">Remix</span>
         </h1>
         
-        <div className="flex justify-center gap-8">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
           <div className="w-full">
             <TextArea
               label="Your Resume"
@@ -102,7 +102,7 @@ export default function Home() {
           <button
             onClick={handleMatch}
             disabled={isLoading}
-            className={`px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
+            className={`w-full sm:w-auto px-4 sm:px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
                      transition-colors duration-200 font-semibold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Processing...' : 'Match Resume'}
