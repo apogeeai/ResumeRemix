@@ -2,13 +2,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
-if (!process.env.OPENAI_API_KEY) {
-  return res.status(500).json({ 
-    error: 'OpenAI API key not configured',
-    details: 'Please add your OpenAI API key to the Secrets tool (Tools > Secrets)'
-  });
-}
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -17,6 +10,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(500).json({ 
+      error: 'OpenAI API key not configured',
+      details: 'Please add your OpenAI API key to the Secrets tool (Tools > Secrets)'
+    });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
