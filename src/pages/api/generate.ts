@@ -1,78 +1,85 @@
-import { Configuration, OpenAIApi } from "openai";
+import { NextApiRequest, NextApiResponse } from "next";
+import OpenAI from "openai";
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-export default async function handler(req, res) {
+  if (!process.env.Open_API_Key) {
+    return res.status(500).json({
+      error: "OpenAI API key not configured",
+      details:
+        "Please add your OpenAI API key to the Secrets tool (Tools > Secrets)",
+    });
+  }
+
+  const openai = new OpenAI({
+    apiKey: process.env.Open_API_Key,
+  });
+
   try {
     const { resume, jobDescription } = req.body;
+
     if (!resume || !jobDescription) {
       return res
         .status(400)
-        .json({ error: "Resume and Job Description are required" });
+        .json({ error: "Resume and job description are required" });
     }
 
-    // The prompt instructs GPT on exactly what you need
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content: `
-          You are an expert resume writer with a PhD-level understanding of how to adapt
-          resume bullet points to new job descriptions. You strictly follow user instructions
-          about formatting, bullet points, and essential achievements to highlight.
-          `,
+          content:
+            "You are an expert resume writer specializing in transforming resume bullet points to match job requirements while maintaining original formatting and structure.",
         },
         {
           role: "user",
-          content: `
-Transform the candidate's resume bullet points so they reflect the new job requirements while retaining core achievements from the original description. 
+          content: `Transform the candidate's resume bullet points to align with the job requirements. For each bullet point in the original resume, create a corresponding enhanced version that incorporates relevant keywords and requirements from the job description. Maintain the exact same formatting, including:
+- Preserve all bullet points and symbols
+- Keep line breaks and spacing
+- Maintain any existing indentation
+- Keep the same number of bullet points as the original resume
 
-**Important Requirements:**
-1. **Produce exactly 4 bullet points**—no more, no fewer.
-2. Each bullet point should be a concise “hybrid” of the candidate’s original responsibilities and the new job’s requirements/keywords.
-3. Preserve crucial achievements, numbers, or specifics from the candidate’s original text.
-4. Incorporate relevant skills and keywords from the new job description.
-5. The tone should match the target job description while still reflecting the candidate’s background.
+Original Resume bullet points should be enhanced to emphasize:
+1. Use matching keywords from the job description
+2. Highlight relevant skills and achievements
+3. Quantify results where possible
+4. Match the tone and terminology of the job posting
 
-**Original Resume**: 
-\`\`\`
-${resume}
-\`\`\`
+Key Matching Skills:
+• [List 3-5 most relevant skills]
 
-**Target Job Description**:
-\`\`\`
-${jobDescription}
-\`\`\`
+Targeted Experience Highlights:
+• [Transform resume experiences into 5-7 achievement-focused bullet points that directly address job requirements]
 
-**Instructions**:
-- Read the original resume and the target job description carefully.
-- Identify the most important achievements, skills, and responsibilities that overlap.
-- Combine them into exactly 4 bullet points that each integrate the candidate’s achievements with the new role's requirements.
-- Make sure to preserve any quantifiable metrics or unique details from the original.
-- Do not add any extra bullet points or sections.
+Technical Proficiencies:
+• [List relevant technical skills from resume that match job needs]
 
-**Deliverable**: 
-\`\`\`
-• Bullet Point 1
-• Bullet Point 2
-• Bullet Point 3
-• Bullet Point 4
-\`\`\`
+Additional Qualifications:
+• [2-3 bullet points highlighting other relevant qualifications]
 
-No additional text beyond these four bullet points is needed.`,
+Original Resume: "${resume}"
+Job Description: "${jobDescription}"
+
+Instructions:
+1. Analyze both the resume and job description for matching keywords and skills
+2. Reorganize and rephrase the candidate's experience to highlight relevant qualifications
+3. Keep the candidate's actual achievements but align them with job requirements
+4. Structure with: Summary, Experience (emphasizing matching skills), Technical Skills, and Education
+5. Maintain quantifiable achievements from the original resume`,
         },
       ],
     });
 
     res.setHeader("Content-Type", "application/json");
-    res
-      .status(200)
-      .json({ result: completion.data.choices[0].message.content });
-  } catch (error) {
+    res.status(200).json({ result: completion.choices[0].message.content });
+  } catch (error: any) {
     console.error("OpenAI Error:", error);
     const errorMessage =
       error.response?.data?.error?.message || error.message || "Unknown error";
