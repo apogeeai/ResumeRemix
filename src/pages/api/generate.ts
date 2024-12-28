@@ -33,14 +33,21 @@ export default async function handler(
       messages: [
         {
           role: "system",
-          content: "You are an expert resume writer skilled at creating targeted resumes."
+          content: "You are an expert resume writer specializing in tailoring resumes to specific job requirements while maintaining the candidate's authentic experience."
         },
         {
           role: "user",
-          content: `Create a tailored resume that combines the candidate's experience from this resume: "${resume}" 
-                   with the requirements from this job description: "${jobDescription}". 
-                   Focus on highlighting relevant skills and experiences that match the job requirements.
-                   Format it as a proper resume with sections for Summary, Experience, Skills, and Education if available.`
+          content: `Create a hybrid resume that strategically combines and emphasizes the overlapping elements between the candidate's experience and job requirements.
+
+Original Resume: "${resume}"
+Job Description: "${jobDescription}"
+
+Instructions:
+1. Analyze both the resume and job description for matching keywords and skills
+2. Reorganize and rephrase the candidate's experience to highlight relevant qualifications
+3. Keep the candidate's actual achievements but align them with job requirements
+4. Structure with: Summary, Experience (emphasizing matching skills), Technical Skills, and Education
+5. Maintain quantifiable achievements from the original resume`
         }
       ],
     });
