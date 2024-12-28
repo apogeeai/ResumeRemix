@@ -5,11 +5,30 @@ import { ThemeToggle } from '../components/ThemeToggle';
 export default function Home() {
   const [resume, setResume] = useState('');
   const [jobDescription, setJobDescription] = useState('');
+  const [errors, setErrors] = useState({ resume: '', jobDescription: '' });
 
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState('');
 
   const handleMatch = async () => {
+    // Reset errors
+    setErrors({ resume: '', jobDescription: '' });
+    
+    // Validate inputs
+    let hasErrors = false;
+    if (!resume.trim()) {
+      setErrors(prev => ({ ...prev, resume: 'Resume is required' }));
+      hasErrors = true;
+    }
+    if (!jobDescription.trim()) {
+      setErrors(prev => ({ ...prev, jobDescription: 'Job description is required' }));
+      hasErrors = true;
+    }
+
+    if (hasErrors) return;
+
+    console.log('Sending data:', { resume, jobDescription });
+
     setIsLoading(true);
     try {
       const response = await fetch('/api/generate', {
@@ -20,6 +39,7 @@ export default function Home() {
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('Server error response:', errorText);
         throw new Error(`Server error: ${errorText}`);
       }
 
@@ -27,7 +47,7 @@ export default function Home() {
       setResult(data.result);
     } catch (error: any) {
       console.error('Error:', error);
-      alert(`Error: ${error.message}`);
+      setErrors({ resume: error.message, jobDescription: error.message });
     } finally {
       setIsLoading(false);
     }
@@ -43,28 +63,49 @@ export default function Home() {
         </h1>
         
         <div className="flex justify-center gap-8">
-          <TextArea
-            label="Your Resume"
-            value={resume}
-            onChange={setResume}
-            placeholder="Paste your resume here..."
-          />
+          <div className="w-full">
+            <TextArea
+              label="Your Resume"
+              value={resume}
+              onChange={(value) => {
+                setResume(value);
+                setErrors(prev => ({ ...prev, resume: '' }));
+              }}
+              placeholder="Paste your resume here..."
+            />
+            {errors.resume && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {errors.resume}
+              </p>
+            )}
+          </div>
           
-          <TextArea
-            label="Job Description"
-            value={jobDescription}
-            onChange={setJobDescription}
-            placeholder="Paste the job description here..."
-          />
+          <div className="w-full">
+            <TextArea
+              label="Job Description"
+              value={jobDescription}
+              onChange={(value) => {
+                setJobDescription(value);
+                setErrors(prev => ({ ...prev, jobDescription: '' }));
+              }}
+              placeholder="Paste the job description here..."
+            />
+            {errors.jobDescription && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {errors.jobDescription}
+              </p>
+            )}
+          </div>
         </div>
         
         <div className="flex justify-center mt-8">
           <button
             onClick={handleMatch}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
-                     transition-colors duration-200 font-semibold"
+            disabled={isLoading}
+            className={`px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
+                     transition-colors duration-200 font-semibold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            Match Resume
+            {isLoading ? 'Processing...' : 'Match Resume'}
           </button>
         </div>
         {isLoading && (
