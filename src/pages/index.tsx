@@ -17,25 +17,20 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resume, jobDescription }),
       });
-      
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error('Failed to parse response:', text);
-        throw new Error('Invalid response from server');
-      }
-      
+
       if (!response.ok) {
-        throw new Error(data.details || data.error || 'Failed to generate description');
+        const errorText = await response.text();
+        throw new Error(`Server error: ${errorText}`);
       }
+
+      const data = await response.json();
       setResult(data.result);
     } catch (error: any) {
       console.error('Error:', error);
       alert(`Error: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
