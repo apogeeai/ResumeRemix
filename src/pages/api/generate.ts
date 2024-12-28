@@ -33,11 +33,14 @@ export default async function handler(
       messages: [
         {
           role: "system",
-          content: "You are a professional resume writer and job description expert."
+          content: "You are an expert resume writer skilled at creating targeted resumes."
         },
         {
           role: "user",
-          content: `Create a hybrid job description that combines the requirements from this job description: "${jobDescription}" with the qualifications from this resume: "${resume}". Focus on matching skills and creating an ideal position that fits both.`
+          content: `Create a tailored resume that combines the candidate's experience from this resume: "${resume}" 
+                   with the requirements from this job description: "${jobDescription}". 
+                   Focus on highlighting relevant skills and experiences that match the job requirements.
+                   Format it as a proper resume with sections for Summary, Experience, Skills, and Education if available.`
         }
       ],
     });
@@ -48,7 +51,7 @@ export default async function handler(
     console.error('OpenAI Error:', error);
     const errorMessage = error.response?.data?.error?.message || error.message || 'Unknown error';
     res.status(500).json({ 
-      error: 'Failed to generate description',
+      error: 'Failed to generate resume',
       details: errorMessage
     });
   }
