@@ -3,7 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
 
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error('OPENAI_API_KEY is not set in environment variables');
+  return res.status(500).json({ 
+    error: 'OpenAI API key not configured',
+    details: 'Please add your OpenAI API key to the Secrets tool (Tools > Secrets)'
+  });
 }
 
 const openai = new OpenAI({
