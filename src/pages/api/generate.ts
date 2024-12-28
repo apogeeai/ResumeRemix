@@ -39,6 +39,7 @@ export default async function handler(
       ],
     });
 
+    res.setHeader('Content-Type', 'application/json');
     res.status(200).json({ result: completion.choices[0].message.content });
   } catch (error: any) {
     console.error('OpenAI Error:', error);
