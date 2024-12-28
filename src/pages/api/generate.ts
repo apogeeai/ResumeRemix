@@ -41,10 +41,11 @@ export default async function handler(
 
     res.status(200).json({ result: completion.choices[0].message.content });
   } catch (error: any) {
-    console.error('Error:', error);
+    console.error('OpenAI Error:', error);
+    const errorMessage = error.response?.data?.error?.message || error.message || 'Unknown error';
     res.status(500).json({ 
       error: 'Failed to generate description',
-      details: error.message 
+      details: errorMessage
     });
   }
 }

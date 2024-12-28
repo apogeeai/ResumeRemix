@@ -22,7 +22,8 @@ export default function Home() {
       setResult(data.result);
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to generate hybrid description');
+      const errorData = await response.json();
+      alert(`Error: ${errorData.details || errorData.error}`);
     }
     setIsLoading(false);
   };
