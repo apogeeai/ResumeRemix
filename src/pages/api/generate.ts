@@ -33,11 +33,21 @@ export default async function handler(
       messages: [
         {
           role: "system",
-          content: "You are an expert resume writer specializing in creating targeted bullet points that highlight relevant experience for specific job requirements."
+          content: "You are an expert resume writer specializing in transforming resume bullet points to match job requirements while maintaining original formatting and structure."
         },
         {
           role: "user",
-          content: `Analyze the resume and job description, then create a bulleted list of achievements and experiences that best match the job requirements. Format the response as follows:
+          content: `Transform the candidate's resume bullet points to align with the job requirements. For each bullet point in the original resume, create a corresponding enhanced version that incorporates relevant keywords and requirements from the job description. Maintain the exact same formatting, including:
+- Preserve all bullet points and symbols
+- Keep line breaks and spacing
+- Maintain any existing indentation
+- Keep the same number of bullet points as the original resume
+
+Original Resume bullet points should be enhanced to emphasize:
+1. Use matching keywords from the job description
+2. Highlight relevant skills and achievements
+3. Quantify results where possible
+4. Match the tone and terminology of the job posting
 
 Key Matching Skills:
 • [List 3-5 most relevant skills]

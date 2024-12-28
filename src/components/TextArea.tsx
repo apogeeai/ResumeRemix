@@ -18,7 +18,7 @@ export function TextArea({ label, value, onChange, placeholder }: TextAreaProps)
         className="w-full min-h-[300px] sm:h-[500px] p-4 rounded-lg border border-gray-300 dark:border-gray-700 
                  bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                 resize-none shadow-sm"
+                 resize-none shadow-sm whitespace-pre-wrap font-mono"
       />
     </div>
   );
