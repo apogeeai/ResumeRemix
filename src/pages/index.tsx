@@ -54,8 +54,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="h-[50px] bg-white dark:bg-gray-800 shadow-md flex items-center justify-between px-4">
+    <div className="min-h-screen">
+      <header className="h-[70px] glass-panel sticky top-0 z-50 flex items-center justify-between px-6 mx-4 mt-4">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Resume<span className="text-blue-600">Remix</span>
         </h1>
@@ -67,9 +67,11 @@ export default function Home() {
         </div>
       </header>
       
-      <div className="max-w-7xl mx-auto p-4 sm:p-8">
-        
-        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
+      <div className="max-w-7xl mx-auto p-4 sm:p-8 space-y-8">
+        <h2 className="text-4xl font-bold text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+          Transform Your Resume
+        </h2>
+        <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-8">
           <div className="w-full">
             <TextArea
               label="Your Resume"
@@ -109,8 +111,7 @@ export default function Home() {
           <button
             onClick={handleMatch}
             disabled={isLoading}
-            className={`w-full sm:w-auto px-4 sm:px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
-                     transition-colors duration-200 font-semibold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`modern-button w-full sm:w-auto ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {isLoading ? 'Processing...' : 'Match Resume'}
           </button>
