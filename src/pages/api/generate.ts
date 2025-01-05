@@ -1,10 +1,30 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 
+// Simple rate limiting
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 5;
+const requestCounts = new Map<string, { count: number; timestamp: number }>();
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const now = Date.now();
+  
+  const userRequests = requestCounts.get(ip as string) || { count: 0, timestamp: now };
+  if (now - userRequests.timestamp > RATE_LIMIT_WINDOW) {
+    userRequests.count = 0;
+    userRequests.timestamp = now;
+  }
+  
+  if (userRequests.count >= MAX_REQUESTS_PER_WINDOW) {
+    return res.status(429).json({ error: "Too many requests. Please try again later." });
+  }
+  
+  userRequests.count++;
+  requestCounts.set(ip as string, userRequests);
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
