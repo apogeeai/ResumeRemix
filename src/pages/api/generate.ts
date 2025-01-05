@@ -31,50 +31,75 @@ export default async function handler(
     }
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
           role: "system",
-          content:
-            "You are an expert resume writer specializing in transforming resume bullet points to match job requirements while maintaining original formatting and structure.",
+          content: `You are an expert ATS-optimization specialist and resume writer with experience in talent acquisition across multiple industries. Your expertise includes keyword optimization, achievement quantification, and maintaining authenticity while maximizing match rates.`,
         },
         {
           role: "user",
-          content: `Transform the candidate's resume bullet points to align with the job requirements. For each bullet point in the original resume, create a corresponding enhanced version that incorporates relevant keywords and requirements from the job description. Maintain the exact same formatting, including:
-- Preserve all bullet points and symbols
-- Keep line breaks and spacing
-- Maintain any existing indentation
-- Keep the same number of bullet points as the original resume
+          content: `Transform the candidate's latest role's bullet pointed resume items to optimize for both ATS systems and human readers while maintaining professional authenticity. Make sure to output in bullet Points then have a sections says Overview of thigs to change in rest of resume, skills etc) Follow these precise guidelines:
 
-Original Resume bullet points should be enhanced to emphasize:
-1. Use matching keywords from the job description
-2. Highlight relevant skills and achievements
-3. Quantify results where possible
-4. Match the tone and terminology of the job posting
+STEP 1: JOB DESCRIPTION ANALYSIS
 
-Key Matching Skills:
-• [List 3-5 most relevant skills]
+Extract core technical requirements and skills
+Identify key soft skills and leadership requirements
+Note specific metrics, tools, and technologies mentioned
+Capture industry-specific terminology
+Identify required years of experience and responsibility level
 
-Targeted Experience Highlights:
-• [Transform resume experiences into 5-7 achievement-focused bullet points that directly address job requirements]
+STEP 2: CURRENT BULLET POINT ANALYSIS
 
-Technical Proficiencies:
-• [List relevant technical skills from resume that match job needs]
+Review existing achievements and metrics
+Identify transferable skills and experiences
+Note current action verbs and technical terms
+Evaluate existing quantifiable results
+Check for leadership and project management elements
 
-Additional Qualifications:
-• [2-3 bullet points highlighting other relevant qualifications]
+STEP 3: OPTIMIZATION RULES
+
+Start each bullet with a strong action verb
+Include exact job description keywords where truthful
+Quantify achievements with specific metrics
+Limit each bullet to 1-2 lines
+Use clear technical terminology without acronyms
+
+STEP 4: BULLET POINT TRANSFORMATION
+CREATE 5 OPTIMIZED BULLETS THAT:
+
+Lead with high-impact action verbs
+Incorporate job-specific keywords naturally
+Include measurable results (%, $, time saved)
+Demonstrate scope of responsibility
+Show technical proficiency required by the role
+
+QUALITY CHECKLIST:
+✓ Each bullet starts with a strong action verb
+✓ Contains at least one quantifiable metric
+✓ Includes key technical terms from job description
+✓ Demonstrates relevant skill application
+✓ Reads naturally while maintaining ATS optimization
+✓ Stays truthful to original experience
+OUTPUT FORMAT:
+
+[Action Verb] [Technical Skill/Tool] to [Achievement] resulting in [Quantifiable Impact]
+
+This refined version:
+
+Focuses specifically on bullet point optimization
+Provides a clear, step-by-step transformation process
+Emphasizes both ATS and human readability
+Maintains truthfulness to original experience
+Produces consistent, measurable results
+Limits output to 5 most impactful bullets
 
 Original Resume: "${resume}"
-Job Description: "${jobDescription}"
-
-Instructions:
-1. Analyze both the resume and job description for matching keywords and skills
-2. Reorganize and rephrase the candidate's experience to highlight relevant qualifications
-3. Keep the candidate's actual achievements but align them with job requirements
-4. Structure with: Summary, Experience (emphasizing matching skills), Technical Skills, and Education
-5. Maintain quantifiable achievements from the original resume`,
+Job Description: "${jobDescription}"`,
         },
       ],
+      temperature: 0.5, // Lower temperature for more consistent output
+      max_tokens: 2000, // Adjusted for comprehensive response
     });
 
     res.setHeader("Content-Type", "application/json");
