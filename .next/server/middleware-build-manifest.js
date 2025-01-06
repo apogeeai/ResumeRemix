@@ -24,6 +24,11 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/cover-letter": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/cover-letter.js"
+    ],
     "/resume": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
