@@ -6,7 +6,14 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      maxWidth: {
+        'site': '1260px',
+      },
+      fontFamily: {
+        sans: ['Open Sans', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }

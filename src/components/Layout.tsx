@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </header>
-      <main>
+      <main className="max-w-site mx-auto">
         {children}
       </main>
     </div>

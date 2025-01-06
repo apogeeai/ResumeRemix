@@ -24,8 +24,9 @@ export function TextArea({ label, value, onChange, placeholder }: TextAreaProps)
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
                  resize-none font-mono text-sm leading-relaxed"
         style={{
-          whiteSpace: 'pre-wrap',
+          whiteSpace: 'pre',
           wordWrap: 'break-word',
+          fontFamily: 'Open Sans, sans-serif',
           overflowWrap: 'break-word',
           unicodeBidi: 'embed',
           WebkitTextSizeAdjust: '100%'
