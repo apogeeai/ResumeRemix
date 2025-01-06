@@ -25,6 +25,7 @@ export default async function handler(
   
   userRequests.count++;
   requestCounts.set(ip as string, userRequests);
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -32,8 +33,7 @@ export default async function handler(
   if (!process.env.Open_API_Key) {
     return res.status(500).json({
       error: "OpenAI API key not configured",
-      details:
-        "Please add your OpenAI API key to the Secrets tool (Tools > Secrets)",
+      details: "Please add your OpenAI API key to the Secrets tool (Tools > Secrets)",
     });
   }
 
@@ -42,7 +42,7 @@ export default async function handler(
   });
 
   try {
-    const { resume, jobDescription } = req.body;
+    const { resume, jobDescription, type } = req.body;
 
     if (!resume || !jobDescription) {
       return res
@@ -50,19 +50,18 @@ export default async function handler(
         .json({ error: "Resume and job description are required" });
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content: `You are an expert ATS-optimization specialist and resume writer with experience in talent acquisition across multiple industries. Your expertise includes keyword optimization, achievement quantification, and maintaining authenticity while maximizing match rates.`,
-        },
-        {
-          role: "user",
-          content: `Transform the candidate's latest role's bullet pointed resume items to optimize for both ATS systems and human readers while maintaining professional authenticity. Make sure to output in bullet Points then have a sections says Overview of thigs to change in rest of resume, skills etc) Follow these precise guidelines:
+    if (!type || !['resume', 'cover-letter'].includes(type)) {
+      return res.status(400).json({ error: "Invalid type specified" });
+    }
+
+    const systemPrompt = type === 'resume' 
+      ? `You are an expert ATS-optimization specialist and resume writer with experience in talent acquisition across multiple industries. Your expertise includes keyword optimization, achievement quantification, and maintaining authenticity while maximizing match rates.`
+      : `You are an expert cover letter writer with extensive experience in talent acquisition. Your task is to create a compelling 150-word cover letter that highlights the candidate's relevant experience and demonstrates their fit for the role. The cover letter should be professional, engaging, and tailored to the specific job description.`;
+
+    const userPrompt = type === 'resume'
+      ? `Transform the candidate's latest role's bullet pointed resume items to optimize for both ATS systems and human readers while maintaining professional authenticity. Make sure to output in bullet Points then have a sections says Overview of thigs to change in rest of resume, skills etc) Follow these precise guidelines:
 
 STEP 1: JOB DESCRIPTION ANALYSIS
-
 Extract core technical requirements and skills
 Identify key soft skills and leadership requirements
 Note specific metrics, tools, and technologies mentioned
@@ -70,7 +69,6 @@ Capture industry-specific terminology
 Identify required years of experience and responsibility level
 
 STEP 2: CURRENT BULLET POINT ANALYSIS
-
 Review existing achievements and metrics
 Identify transferable skills and experiences
 Note current action verbs and technical terms
@@ -78,7 +76,6 @@ Evaluate existing quantifiable results
 Check for leadership and project management elements
 
 STEP 3: OPTIMIZATION RULES
-
 Start each bullet with a strong action verb
 Include exact job description keywords where truthful
 Quantify achievements with specific metrics
@@ -87,39 +84,39 @@ Use clear technical terminology without acronyms
 
 STEP 4: BULLET POINT TRANSFORMATION
 CREATE 5 OPTIMIZED BULLETS THAT:
-
 Lead with high-impact action verbs
 Incorporate job-specific keywords naturally
 Include measurable results (%, $, time saved)
 Demonstrate scope of responsibility
 Show technical proficiency required by the role
 
-QUALITY CHECKLIST:
-✓ Each bullet starts with a strong action verb
-✓ Contains at least one quantifiable metric
-✓ Includes key technical terms from job description
-✓ Demonstrates relevant skill application
-✓ Reads naturally while maintaining ATS optimization
-✓ Stays truthful to original experience
-OUTPUT FORMAT:
-
-[Action Verb] [Technical Skill/Tool] to [Achievement] resulting in [Quantifiable Impact]
-
-This refined version:
-
-Focuses specifically on bullet point optimization
-Provides a clear, step-by-step transformation process
-Emphasizes both ATS and human readability
-Maintains truthfulness to original experience
-Produces consistent, measurable results
-Limits output to 5 most impactful bullets
-
 Original Resume: "${resume}"
-Job Description: "${jobDescription}"`,
+Job Description: "${jobDescription}"`
+      : `Create a compelling 150-word cover letter based on the candidate's resume and the job description. The cover letter should:
+1. Open with a strong introduction that shows enthusiasm for the role
+2. Highlight 2-3 most relevant achievements from the resume that match the job requirements
+3. Demonstrate understanding of the company's needs
+4. Close with a clear call to action
+5. Maintain a professional yet engaging tone
+6. Be exactly 150 words
+
+Resume: "${resume}"
+Job Description: "${jobDescription}"`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: userPrompt,
         },
       ],
-      temperature: 0.5, // Lower temperature for more consistent output
-      max_tokens: 2000, // Adjusted for comprehensive response
+      temperature: 0.5,
+      max_tokens: 2000,
     });
 
     res.setHeader("Content-Type", "application/json");
@@ -129,7 +126,7 @@ Job Description: "${jobDescription}"`,
     const errorMessage =
       error.response?.data?.error?.message || error.message || "Unknown error";
     res.status(500).json({
-      error: "Failed to generate resume",
+      error: "Failed to generate content",
       details: errorMessage,
     });
   }
