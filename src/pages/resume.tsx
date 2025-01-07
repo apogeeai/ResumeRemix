@@ -87,8 +87,7 @@ export default function ResumePage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-        <div className="max-w-7xl mx-auto p-4 sm:p-8 space-y-12">
+      <div className="max-w-7xl mx-auto p-4 sm:p-8 space-y-8">
           <div className="text-center space-y-4">
             <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 text-transparent bg-clip-text">
               Transform Your Resume

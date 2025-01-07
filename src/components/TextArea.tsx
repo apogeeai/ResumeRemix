@@ -22,7 +22,8 @@ export function TextArea({ label, value, onChange, placeholder }: TextAreaProps)
         className="modern-input w-full min-h-[300px] sm:h-[500px] p-6 
                  text-gray-900 dark:text-gray-100
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                 resize-none font-mono text-sm leading-relaxed"
+                 resize-none font-mono text-sm leading-relaxed
+                 border border-[#141414] dark:border-transparent"
         style={{
           whiteSpace: 'pre',
           wordWrap: 'break-word',
