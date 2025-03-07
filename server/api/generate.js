@@ -1,7 +1,7 @@
-const openaiApiKey = process.env.OPENAI_API_KEY;
+const openaiApiKey = process.env.Open_API_Key;
 
 if (!openaiApiKey) {
-  console.error('The OPENAI_API_KEY environment variable is missing or empty.');
+  console.error('The Open_API_Key environment variable is missing or empty.');
   return res.status(500).json({ error: 'Internal server error: Missing API key.' });
 }
 
