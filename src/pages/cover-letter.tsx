@@ -238,7 +238,7 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
                     setErrors(prev => ({ ...prev, url: "" }));
                   }}
                   placeholder="Paste job posting URL here..."
-                  className="flex-1 px-4 py-2.5 border border-gray-200/20 dark:border-[#2a2a2a]/50 rounded-[6px] shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 bg-gray-50/50 dark:bg-white backdrop-blur-sm text-gray-900 dark:text-gray-700 transition-all duration-200"
+                  className="flex-1 px-4 py-2.5 border border-gray-200/20 dark:border-[#2a2a2a]/50 rounded-[6px] shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm text-gray-900 dark:text-white transition-all duration-200"
                 />
                 <button
                   onClick={handleFetchJobDescription}
