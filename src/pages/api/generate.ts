@@ -30,7 +30,7 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  if (!process.env.Open_API_Key) {
+  if (!process.env.OPENAI_API_KEY) {
     return res.status(500).json({
       error: "OpenAI API key not configured",
       details: "Please add your OpenAI API key to the Secrets tool (Tools > Secrets)",
@@ -38,7 +38,7 @@ export default async function handler(
   }
 
   const openai = new OpenAI({
-    apiKey: process.env.Open_API_Key,
+    apiKey: process.env.OPENAI_API_KEY,
   });
 
   try {
@@ -55,50 +55,38 @@ export default async function handler(
     }
 
     const systemPrompt = type === 'resume' 
-      ? `You are an expert ATS-optimization specialist and resume writer with experience in talent acquisition across multiple industries. Your expertise includes keyword optimization, achievement quantification, and maintaining authenticity while maximizing match rates.`
-      : `You are an expert cover letter writer with extensive experience in talent acquisition. Your task is to create a compelling 150-word cover letter that highlights the candidate's relevant experience and demonstrates their fit for the role. The cover letter should be professional, engaging, and tailored to the specific job description.`;
+      ? `You are an ATS expert and resume consultant. Analyze the resume against the job description and provide structured feedback with an ATS match score.`
+      : `You are a professional cover letter writer. Create a concise 150-word cover letter matching the candidate to the role.`;
 
     const userPrompt = type === 'resume'
-      ? `Transform the candidate's latest role's bullet pointed resume items to optimize for both ATS systems and human readers while maintaining professional authenticity. Make sure to output in bullet Points then have a sections says Overview of thigs to change in rest of resume, skills etc) Follow these precise guidelines:
+      ? `Analyze the resume against the job description and provide:
 
-STEP 1: JOB DESCRIPTION ANALYSIS
-Extract core technical requirements and skills
-Identify key soft skills and leadership requirements
-Note specific metrics, tools, and technologies mentioned
-Capture industry-specific terminology
-Identify required years of experience and responsibility level
+1. ATS Score
+Calculate and show an estimated ATS match score (0-100%). Consider keyword matches, skills alignment, and experience relevance.
 
-STEP 2: CURRENT BULLET POINT ANALYSIS
-Review existing achievements and metrics
-Identify transferable skills and experiences
-Note current action verbs and technical terms
-Evaluate existing quantifiable results
-Check for leadership and project management elements
+2. Missing Keywords
+List important keywords from the job description that are missing or underemphasized in the resume.
 
-STEP 3: OPTIMIZATION RULES
-Start each bullet with a strong action verb
-Include exact job description keywords where truthful
-Quantify achievements with specific metrics
-Limit each bullet to 1-2 lines
-Use clear technical terminology without acronyms
+3. Skills Analysis
+• List skills that should be added or emphasized
+• Suggest skills that could be reworded for better ATS matching
 
-STEP 4: BULLET POINT TRANSFORMATION
-CREATE 5 OPTIMIZED BULLETS THAT:
-Lead with high-impact action verbs
-Incorporate job-specific keywords naturally
-Include measurable results (%, $, time saved)
-Demonstrate scope of responsibility
-Show technical proficiency required by the role
+4. Key Recommendations
+Provide specific, actionable recommendations for improving the resume, focusing on:
+• Content improvements
+• Format suggestions
+• Keyword optimization
+• Achievement quantification
 
-Original Resume: "${resume}"
+Be specific and concise. Format with bullet points for readability.
+
+Resume: "${resume}"
 Job Description: "${jobDescription}"`
-      : `Create a compelling 150-word cover letter based on the candidate's resume and the job description. The cover letter should:
-1. Open with a strong introduction that shows enthusiasm for the role
-2. Highlight 2-3 most relevant achievements from the resume that match the job requirements
-3. Demonstrate understanding of the company's needs
-4. Close with a clear call to action
-5. Maintain a professional yet engaging tone
-6. Be exactly 150 words
+      : `Write a 150-word professional cover letter that:
+- Shows enthusiasm and relevant experience
+- Highlights 2-3 key achievements
+- Ends with a call to action
+No double spacing between paragraphs.
 
 Resume: "${resume}"
 Job Description: "${jobDescription}"`;
@@ -115,16 +103,35 @@ Job Description: "${jobDescription}"`;
           content: userPrompt,
         },
       ],
-      temperature: 0.5,
-      max_tokens: 2000,
+      temperature: type === 'resume' ? 0.3 : 0.5,
+      max_tokens: type === 'resume' ? 1000 : 500,
     });
 
+    // Format the cover letter for Word document if needed
+    let result = completion.choices[0]?.message?.content;
+    if (!result) {
+      throw new Error("No content generated");
+    }
+    
+    if (type === 'cover-letter') {
+      result = result.replace(/\n\n/g, '\n'); // Remove double line breaks
+    }
+
     res.setHeader("Content-Type", "application/json");
-    res.status(200).json({ result: completion.choices[0].message.content });
+    res.status(200).json({ result });
   } catch (error: any) {
     console.error("OpenAI Error:", error);
     const errorMessage =
       error.response?.data?.error?.message || error.message || "Unknown error";
+    
+    // Check for quota exceeded error
+    if (errorMessage.includes("exceeded your current quota")) {
+      return res.status(500).json({
+        error: "API Quota Exceeded",
+        details: "The OpenAI API quota has been exceeded. Please check the API key's billing status and ensure there are sufficient credits available."
+      });
+    }
+    
     res.status(500).json({
       error: "Failed to generate content",
       details: errorMessage,

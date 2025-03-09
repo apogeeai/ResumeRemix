@@ -1,36 +1,31 @@
-
-import React from 'react';
+import { ChangeEvent } from "react";
 
 interface TextAreaProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  placeholder: string;
+  placeholder?: string;
+  className?: string;
 }
 
-export function TextArea({ label, value, onChange, placeholder }: TextAreaProps) {
+export function TextArea({ label, value, onChange, placeholder, className = "" }: TextAreaProps) {
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
+  };
+
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-        {label}
-      </label>
+    <div className="space-y-2">
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          {label}
+        </label>
+      )}
       <textarea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
-        spellCheck="false"
-        className="modern-input w-full min-h-[300px] sm:h-[500px] p-6 
-                 text-gray-900 dark:text-gray-100
-                 focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                 resize-none font-mono text-sm leading-relaxed"
-        style={{
-          whiteSpace: 'pre',
-          wordWrap: 'break-word',
-          fontFamily: 'Open Sans, sans-serif',
-          overflowWrap: 'break-word',
-          unicodeBidi: 'embed',
-          WebkitTextSizeAdjust: '100%'
-        }}
+        rows={8}
+        className={`w-full px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 ${className}`}
       />
     </div>
   );
