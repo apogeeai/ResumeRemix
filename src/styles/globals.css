@@ -53,7 +53,8 @@ body {
 }
 
 .dark body {
-  background: #111827;
+  background: #333333;
+  background-image: linear-gradient(to bottom right, #333333, #444444);
 }
 
 @media (max-width: 640px) {

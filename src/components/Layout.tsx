@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-gray-50 dark:from-[#121212] dark:via-[#151515] dark:to-[#181818] transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-gray-50 dark:from-[#333333] dark:via-[#343434] dark:to-[#3a3a3a] transition-colors duration-300">
       <Head>
         <title>Resume Remix</title>
         <link rel="icon" href="/favicon.ico" />

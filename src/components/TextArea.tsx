@@ -25,7 +25,7 @@ export function TextArea({ label, value, onChange, placeholder, className = "" }
         onChange={handleChange}
         placeholder={placeholder}
         rows={8}
-        className={`w-full px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 ${className}`}
+        className={`w-full px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200 bg-white dark:bg-[#2a2a2a] text-gray-800 dark:text-gray-300 ${className}`}
       />
     </div>
   );
