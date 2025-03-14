@@ -46,8 +46,8 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
   const [errors, setErrors] = useState({ resume: "", jobDescription: "", url: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingJob, setIsFetchingJob] = useState(false);
-  const [result, setResult] = useState("");
-  const [resultType, setResultType] = useState<"cover-letter" | "resume" | null>(null);
+  const [result, setResult] = useState<{analysis: string, coverLetter: string} | null>(null);
+  const [resultType, setResultType] = useState<"both" | null>(null);
   const [jobUrl, setJobUrl] = useState("");
 
   const handleFetchJobDescription = async () => {
@@ -283,8 +283,36 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
         <div className="flex justify-center mt-12">
           <button
             onClick={async () => {
-              await handleGenerate("resume");
-              await handleGenerate("cover-letter");
+              setIsLoading(true);
+              try {
+                const [analysisRes, coverLetterRes] = await Promise.all([
+                  fetch("/api/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ resume, jobDescription, type: "resume" }),
+                  }),
+                  fetch("/api/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ resume, jobDescription, type: "cover-letter" }),
+                  })
+                ]);
+                
+                const [analysisData, coverLetterData] = await Promise.all([
+                  analysisRes.json(),
+                  coverLetterRes.json()
+                ]);
+                
+                setResult({
+                  analysis: analysisData.result,
+                  coverLetter: coverLetterData.result
+                });
+                setResultType("both");
+              } catch (error) {
+                console.error("Error:", error);
+              } finally {
+                setIsLoading(false);
+              }
             }}
             disabled={isLoading}
             className={`px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 hover:from-blue-700 hover:via-purple-700 hover:to-green-700 text-white rounded-[6px] shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 transition-all duration-200 font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -313,19 +341,8 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
           </div>
         )}
 
-        {(result || resultType) && (
+        {result && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-                  Resume Analysis
-                </h2>
-              </div>
-              <div className="text-gray-700 dark:text-gray-300 prose prose-blue max-w-none dark:prose-invert">
-                {formatResumeRecommendations(result)}
-              </div>
-            </div>
-
             <div className="p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
@@ -342,9 +359,20 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
                 </button>
               </div>
               <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed space-y-6">
-                {result?.split('\n').map((paragraph, index) => (
+                {result.coverLetter?.split('\n').map((paragraph, index) => (
                   <p key={index} className="mb-6 last:mb-0">{paragraph}</p>
                 ))}
+              </div>
+            </div>
+
+            <div className="p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                  Resume Analysis
+                </h2>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300 prose prose-blue max-w-none dark:prose-invert">
+                {formatResumeRecommendations(result.analysis)}
               </div>
             </div>
           </div>
