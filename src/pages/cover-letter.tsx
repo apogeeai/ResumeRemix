@@ -331,17 +331,18 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
                 </button>
               )}
             </div>
-            <div className={`text-gray-700 dark:text-gray-300 ${
-              resultType === "resume" 
-                ? "prose prose-blue max-w-none dark:prose-invert" 
-                : "whitespace-pre-wrap leading-relaxed space-y-6"
-            }`}>
-              {resultType === "cover-letter" 
-                ? result.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-6 last:mb-0">{paragraph}</p>
-                  ))
-                : formatResumeRecommendations(result)}
-            </div>
+            {resultType === "resume" && (
+              <div className="text-gray-700 dark:text-gray-300 prose prose-blue max-w-none dark:prose-invert">
+                {formatResumeRecommendations(result)}
+              </div>
+            )}
+            {resultType === "cover-letter" && (
+              <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed space-y-6">
+                {result.split('\n').map((paragraph, index) => (
+                  <p key={index} className="mb-6 last:mb-0">{paragraph}</p>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
