@@ -280,36 +280,24 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
           </div>
         </div>
 
-        <div className="flex justify-center gap-4 mt-12">
+        <div className="flex justify-center mt-12">
           <button
-            onClick={() => handleGenerate("cover-letter")}
+            onClick={async () => {
+              await handleGenerate("resume");
+              await handleGenerate("cover-letter");
+            }}
             disabled={isLoading}
-            className={`px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-[6px] shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-200 font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 hover:from-blue-700 hover:via-purple-700 hover:to-green-700 text-white rounded-[6px] shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 transition-all duration-200 font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {isLoading && resultType === "cover-letter" ? (
+            {isLoading ? (
               <span className="flex items-center gap-2">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Processing...
+                Analyzing & Generating...
               </span>
-            ) : "Generate Cover Letter"}
-          </button>
-          <button
-            onClick={() => handleGenerate("resume")}
-            disabled={isLoading}
-            className={`px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-[6px] shadow-lg shadow-green-500/10 hover:shadow-green-500/20 transition-all duration-200 font-medium ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {isLoading && resultType === "resume" ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Processing...
-              </span>
-            ) : "Analyze Resume"}
+            ) : "Analyze & Generate"}
           </button>
         </div>
 

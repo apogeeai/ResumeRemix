@@ -55,30 +55,39 @@ export default async function handler(
     }
 
     const systemPrompt = type === 'resume' 
-      ? `You are an ATS expert and resume consultant. Analyze the resume against the job description and provide structured feedback with an ATS match score.`
+      ? `You are an expert ATS system analyzer and PhD-level recruitment consultant specializing in semantic analysis and keyword optimization. Your task is to perform an in-depth algorithmic analysis of resume-job alignment using advanced NLP techniques, considering both ATS systems and human recruiter psychology.`
       : `You are a professional cover letter writer. Create a concise 150-word cover letter matching the candidate to the role.`;
 
     const userPrompt = type === 'resume'
-      ? `Analyze the resume against the job description and provide:
+      ? `Perform a comprehensive semantic and keyword analysis:
 
-1. ATS Score
-Calculate and show an estimated ATS match score (0-100%). Consider keyword matches, skills alignment, and experience relevance.
+1. ATS Match Score (0-100%)
+• Calculate based on weighted criteria:
+  - Key technical skills alignment (40%)
+  - Experience relevance (30%)
+  - Role-specific terminology match (20%)
+  - Industry-specific keywords (10%)
+• Show subcategory scores and final weighted score
 
-2. Missing Keywords
-List important keywords from the job description that are missing or underemphasized in the resume.
+2. Critical Missing Keywords
+• High-impact missing terms (ranked by importance)
+• Context-specific terminology gaps
+• Industry-standard certifications/tools absent
+• Semantic alternatives analysis
 
-3. Skills Analysis
-• List skills that should be added or emphasized
-• Suggest skills that could be reworded for better ATS matching
+3. Advanced Skills Analysis
+• Priority matrix of missing skills (Essential/Important/Beneficial)
+• Semantic clustering of existing skills
+• Recommended skill phrasing for maximum ATS impact
+• Complementary skills for role advancement
 
-4. Key Recommendations
-Provide specific, actionable recommendations for improving the resume, focusing on:
-• Content improvements
-• Format suggestions
-• Keyword optimization
-• Achievement quantification
+4. Strategic Recommendations
+• ATS optimization tactics
+• Semantic reinforcement strategies
+• Achievement quantification formula
+• Position-specific language enhancements
 
-Be specific and concise. Format with bullet points for readability.
+Format with clear hierarchical structure. Focus on actionable, high-impact changes.
 
 Resume: "${resume}"
 Job Description: "${jobDescription}"`
