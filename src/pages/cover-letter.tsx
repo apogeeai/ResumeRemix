@@ -313,13 +313,24 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
           </div>
         )}
 
-        {result && (
-          <div className="mt-12 p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-                {resultType === "cover-letter" ? "Your Cover Letter" : "Resume Analysis"}
-              </h2>
-              {resultType === "cover-letter" && (
+        {(result || resultType) && (
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                  Resume Analysis
+                </h2>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300 prose prose-blue max-w-none dark:prose-invert">
+                {formatResumeRecommendations(result)}
+              </div>
+            </div>
+
+            <div className="p-8 bg-gray-50/50 dark:bg-[#1a1a1a]/50 backdrop-blur-sm rounded-[6px] shadow-xl dark:shadow-black/10 border border-gray-200/20 dark:border-[#2a2a2a]/50">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+                  Your Cover Letter
+                </h2>
                 <button
                   onClick={handleDownloadWord}
                   className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-[6px] shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-200 font-medium flex items-center gap-2 backdrop-blur-sm"
@@ -329,20 +340,13 @@ Bachelor of Science in Electrical and Computer Systems Engineering, College of E
                   </svg>
                   Download as Word
                 </button>
-              )}
-            </div>
-            {resultType === "resume" && (
-              <div className="text-gray-700 dark:text-gray-300 prose prose-blue max-w-none dark:prose-invert">
-                {formatResumeRecommendations(result)}
               </div>
-            )}
-            {resultType === "cover-letter" && (
               <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed space-y-6">
-                {result.split('\n').map((paragraph, index) => (
+                {result?.split('\n').map((paragraph, index) => (
                   <p key={index} className="mb-6 last:mb-0">{paragraph}</p>
                 ))}
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>
